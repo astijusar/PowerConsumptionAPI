@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using PowerConsumptionAPI.Models.DTOs.Computer;
+using PowerConsumptionAPI.Models.DTOs.PowerConsumption;
 
 namespace PowerConsumptionAPI.Models.Mapping
 {
@@ -10,6 +11,9 @@ namespace PowerConsumptionAPI.Models.Mapping
             CreateMap<Computer, ComputerDto>();
             CreateMap<ComputerCreationDto, Computer>();
             CreateMap<ComputerUpdateDto, Computer>();
+
+            CreateMap<PowerConsumption, PowerConsumptionDto>();
+            CreateMap<PowerConsumptionCreationDto, PowerConsumption>();
         }
     }
 }
