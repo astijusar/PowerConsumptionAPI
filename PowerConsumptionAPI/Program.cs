@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using PowerConsumptionAPI.Filters.ActionFilters;
 using PowerConsumptionAPI.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +18,8 @@ builder.Services.AddDbContext<RepositoryContext>(
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddScoped<ValidationFilterAttribute>();
 
 var app = builder.Build();
 
