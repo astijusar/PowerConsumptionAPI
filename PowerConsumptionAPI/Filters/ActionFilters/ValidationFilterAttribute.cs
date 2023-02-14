@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace PowerConsumptionAPI.Filters.ActionFilters
 {
-    public class ValidationFilterAttribute : IActionFilter
+    public class ValidationFilterAttribute : IAsyncActionFilter
     {
         private readonly ILogger<ValidationFilterAttribute> _logger;
 
@@ -12,7 +12,7 @@ namespace PowerConsumptionAPI.Filters.ActionFilters
             _logger = logger;
         }
 
-        public void OnActionExecuting(ActionExecutingContext context)
+        public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             var action = context.RouteData.Values["action"];
             var controller = context.RouteData.Values["controller"];
@@ -33,10 +33,8 @@ namespace PowerConsumptionAPI.Filters.ActionFilters
                 _logger.LogWarning($"Invalid model state for the object. Controller: {controller}, action: {action}");
                 context.Result = new UnprocessableEntityObjectResult(context.ModelState);
             }
-        }
 
-        public void OnActionExecuted(ActionExecutedContext context)
-        {
+            await next();
         }
     }
 }
