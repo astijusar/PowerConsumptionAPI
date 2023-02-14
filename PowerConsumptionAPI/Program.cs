@@ -19,7 +19,6 @@ var _connectionString = builder.Configuration.GetConnectionString("sqlConnection
 builder.Services.AddDbContext<RepositoryContext>(
         options => options
             .UseMySql(_connectionString, ServerVersion.AutoDetect(_connectionString))
-            .EnableDetailedErrors()
 );
 
 builder.Services.AddEndpointsApiExplorer();
