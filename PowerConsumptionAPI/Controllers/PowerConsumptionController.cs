@@ -5,7 +5,7 @@ namespace PowerConsumptionAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PowerDataController : ControllerBase
+    public class PowerConsumptionController : ControllerBase
     {
 
     }
