@@ -11,5 +11,10 @@ namespace PowerConsumptionAPI.Models
 
         public DbSet<Computer> Computers { get; set; }
         public DbSet<PowerConsumption> PowerConsumptions { get; set; }
+
+        internal Task FindAsync(string id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

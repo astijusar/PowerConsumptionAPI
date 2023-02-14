@@ -33,8 +33,10 @@ namespace PowerConsumptionAPI.Filters.ActionFilters
                 _logger.LogWarning($"Invalid model state for the object. Controller: {controller}, action: {action}");
                 context.Result = new UnprocessableEntityObjectResult(context.ModelState);
             }
-
-            await next();
+            else
+            {
+                await next();
+            }
         }
     }
 }
