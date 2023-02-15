@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using PowerConsumptionAPI.Extensions;
 using PowerConsumptionAPI.Filters.ActionFilters;
 using PowerConsumptionAPI.Models;
 
@@ -37,6 +38,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.ConfigureExceptionHandler(app.Logger);
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
