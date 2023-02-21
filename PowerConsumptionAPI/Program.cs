@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -17,6 +18,11 @@ builder.Services.AddCors(options =>
         builder.AllowAnyOrigin()
          .AllowAnyMethod()
          .AllowAnyHeader());
+});
+
+builder.Services.Configure<IISOptions>(options =>
+{
+
 });
 
 builder.Services.Configure<ApiBehaviorOptions>(options =>
@@ -45,11 +51,21 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+else
+{
+    app.UseHsts();
+}
 
 app.ConfigureExceptionHandler(app.Logger);
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 
 app.UseCors("CorsPolicy");
+
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.All
+});
 
 app.UseAuthorization();
 
