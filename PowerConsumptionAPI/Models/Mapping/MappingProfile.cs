@@ -8,7 +8,9 @@ namespace PowerConsumptionAPI.Models.Mapping
     {
         public MappingProfile()
         {
-            CreateMap<Computer, ComputerDto>();
+            CreateMap<Computer, ComputerDto>()
+                .ForMember(dest => dest.Inactivity,
+                    opt => opt.MapFrom(src => src.PowerConsumptionData.FirstOrDefault().Inactivity));
             CreateMap<ComputerCreationDto, Computer>();
             CreateMap<ComputerUpdateDto, Computer>();
 

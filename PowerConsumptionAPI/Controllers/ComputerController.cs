@@ -23,11 +23,13 @@ namespace PowerConsumptionAPI.Controllers
             _mapper = mapper;
         }
 
+        // kolkas visi endpoints grazina visus rezultatus
         [HttpGet]
         public async Task<IActionResult> GetComputers()
         {
             var computers = await _repositoryContext.Computers
                 .AsNoTracking()
+                .Include(c => c.PowerConsumptionData)
                 .ToListAsync();
 
             var computersDto = _mapper.Map<IEnumerable<ComputerDto>>(computers);

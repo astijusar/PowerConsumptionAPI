@@ -24,6 +24,7 @@ namespace PowerConsumptionAPI.Controllers
             _mapper = mapper;
         }
 
+        // kolkas visi endpoints grazina visus rezultatus
         [HttpGet]
         [ServiceFilter(typeof(ValidateComputerExistsAttribute))]
         public async Task<IActionResult> GetPowerConsumptionData(string computerId)
