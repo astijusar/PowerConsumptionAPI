@@ -1,0 +1,15 @@
+﻿using System.Linq.Expressions;
+
+namespace PowerConsumptionAPI.Repository
+{
+    public interface IRepositoryBase<T>
+    {
+        IQueryable<T> FindAll(bool trackChanges);
+        IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression, bool trackChanges);
+        void Create(T entity);
+        void CreateRange(IEnumerable<T> entity);
+        void Update(T entity);
+        void Delete(T entity);
+        void DeleteRange(IEnumerable<T> entity);
+    }
+}

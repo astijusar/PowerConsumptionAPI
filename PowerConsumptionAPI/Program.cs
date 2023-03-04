@@ -5,6 +5,7 @@ using Microsoft.OpenApi.Models;
 using PowerConsumptionAPI.Extensions;
 using PowerConsumptionAPI.Filters.ActionFilters;
 using PowerConsumptionAPI.Models;
+using PowerConsumptionAPI.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,6 +41,7 @@ builder.Services.AddDbContext<RepositoryContext>(
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
 builder.Services.AddScoped<ValidationFilterAttribute>();
 builder.Services.AddScoped<ValidateComputerExistsAttribute>();
 
