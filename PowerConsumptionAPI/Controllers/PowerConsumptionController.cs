@@ -6,6 +6,8 @@ using PowerConsumptionAPI.Filters.ActionFilters;
 using PowerConsumptionAPI.ModelBinders;
 using PowerConsumptionAPI.Models;
 using PowerConsumptionAPI.Models.DTOs.PowerConsumption;
+using PowerConsumptionAPI.Models.RequestFeatures;
+using PowerConsumptionAPI.Repository;
 
 namespace PowerConsumptionAPI.Controllers
 {
@@ -13,41 +15,45 @@ namespace PowerConsumptionAPI.Controllers
     [ApiController]
     public class PowerConsumptionController : ControllerBase
     {
-        private readonly RepositoryContext _repositoryContext;
+        private readonly IRepositoryManager _repository;
         private readonly ILogger<PowerConsumptionController> _logger;
         private readonly IMapper _mapper;
 
-        public PowerConsumptionController(RepositoryContext repositoryContext, ILogger<PowerConsumptionController> logger, IMapper mapper)
+        public PowerConsumptionController(IRepositoryManager repository, ILogger<PowerConsumptionController> logger, IMapper mapper)
         {
-            _repositoryContext = repositoryContext;
+            _repository = repository;
             _logger = logger;
             _mapper = mapper;
         }
 
-        // kolkas visi endpoints grazina visus rezultatus
         [HttpGet]
         [ServiceFilter(typeof(ValidateComputerExistsAttribute))]
-        public async Task<IActionResult> GetPowerConsumptionData(string computerId)
+        public async Task<IActionResult> GetPowerConsumptionData(string computerId, [FromQuery] PowerConsumptionParameters parameters)
         {
-            var powerConsumption = await _repositoryContext.PowerConsumptions
-                .AsNoTracking()
-                .ToListAsync();
+            var powerConsumption = await _repository.PowerConsumption.GetPowerConsumptionsAsync(computerId, parameters, false);
+
+            DateTime? nextCursor = powerConsumption.Any()
+                ? powerConsumption.LastOrDefault().Time : null;
+
+            var hasNextPage = nextCursor != null
+                ? await _repository.PowerConsumption.AnyAsync(p => p.ComputerId == computerId && p.Time < nextCursor) : false;
 
             var powerConsumptionDto = _mapper.Map<IEnumerable<PowerConsumptionDto>>(powerConsumption);
 
-            return Ok(powerConsumptionDto);
+            return Ok(new { data = powerConsumptionDto, 
+                pagination = new Metadata { CurrentCursor = parameters.Cursor, NextCursor = hasNextPage ? nextCursor : null} });
         }
 
         [HttpPost("collection")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         [ServiceFilter(typeof(ValidateComputerExistsAttribute))]
-        public async Task<IActionResult> SavePowerConsumprionData(string computerId, [FromBody] IEnumerable<PowerConsumptionCreationDto> input)
+        public async Task<IActionResult> SavePowerConsumptionData(string computerId, [FromBody] IEnumerable<PowerConsumptionCreationDto> input)
         {
             var powerConsumption = _mapper.Map<IEnumerable<PowerConsumption>>(input);
             powerConsumption.ToList().ForEach(p => p.ComputerId = computerId);
 
-            await _repositoryContext.PowerConsumptions.AddRangeAsync(powerConsumption);
-            await _repositoryContext.SaveChangesAsync();
+            _repository.PowerConsumption.CreatePowerConsumptions(powerConsumption);
+            await _repository.SaveAsync();
 
             return Ok();
         }
@@ -57,12 +63,7 @@ namespace PowerConsumptionAPI.Controllers
         public async Task<IActionResult> DeletePowerConsumptionData(string computerId,
             [ModelBinder(BinderType = typeof(ArrayModelBinder))] IEnumerable<Guid> powerConsumptionIds)
         {
-            var computer = HttpContext.Items["computer"] as Computer;
-
-            var powerConsumptions = await _repositoryContext.PowerConsumptions
-                .AsNoTracking()
-                .Where(p => p.ComputerId == computerId && powerConsumptionIds.Contains(p.Id))
-                .ToListAsync();
+            var powerConsumptions = await _repository.PowerConsumption.GetPowerConsumptionsByIdsAsync(computerId, powerConsumptionIds, false);
 
             if (!powerConsumptions.Any())
             {
@@ -70,8 +71,8 @@ namespace PowerConsumptionAPI.Controllers
                 return NotFound();
             }
 
-            _repositoryContext.RemoveRange(powerConsumptions);
-            await _repositoryContext.SaveChangesAsync();
+            _repository.PowerConsumption.DeletePowerConsumptions(powerConsumptions);
+            await _repository.SaveAsync();
 
             return NoContent();
         }

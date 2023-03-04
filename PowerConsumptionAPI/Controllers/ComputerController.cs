@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using PowerConsumptionAPI.Filters.ActionFilters;
 using PowerConsumptionAPI.Models;
 using PowerConsumptionAPI.Models.DTOs.Computer;
+using PowerConsumptionAPI.Repository;
 
 namespace PowerConsumptionAPI.Controllers
 {
@@ -12,25 +13,21 @@ namespace PowerConsumptionAPI.Controllers
     [ApiController]
     public class ComputerController : ControllerBase
     {
-        private readonly RepositoryContext _repositoryContext;
+        private readonly IRepositoryManager _repository;
         private readonly ILogger<ComputerController> _logger;
         private readonly IMapper _mapper;
 
-        public ComputerController(RepositoryContext repositoryContext, ILogger<ComputerController> logger, IMapper mapper)
+        public ComputerController(IRepositoryManager repository, ILogger<ComputerController> logger, IMapper mapper)
         {
-            _repositoryContext = repositoryContext;
+            _repository = repository;
             _logger = logger;
             _mapper = mapper;
         }
 
-        // kolkas visi endpoints grazina visus rezultatus
         [HttpGet]
         public async Task<IActionResult> GetComputers()
         {
-            var computers = await _repositoryContext.Computers
-                .AsNoTracking()
-                .Include(c => c.PowerConsumptionData)
-                .ToListAsync();
+            var computers = await _repository.Computer.GetAllComputersAsync(false);
 
             var computersDto = _mapper.Map<IEnumerable<ComputerDto>>(computers);
 
@@ -40,8 +37,7 @@ namespace PowerConsumptionAPI.Controllers
         [HttpGet("{computerId}")]
         public async Task<IActionResult> GetComputer(string computerId)
         {
-            var computer = await _repositoryContext.Computers
-                .SingleOrDefaultAsync(c => c.Id == computerId);
+            var computer = await _repository.Computer.GetComputerAsync(computerId, false);
 
             if (computer == null)
             {
@@ -61,8 +57,8 @@ namespace PowerConsumptionAPI.Controllers
             var computer = _mapper.Map<Computer>(input);
             computer.Name = computer.Id;
 
-            _repositoryContext.Computers.Add(computer);
-            await _repositoryContext.SaveChangesAsync();
+            _repository.Computer.CreateComputer(computer);
+            await _repository.SaveAsync();
 
             var computerDto = _mapper.Map<ComputerDto>(computer);
 
@@ -77,7 +73,7 @@ namespace PowerConsumptionAPI.Controllers
             var computer = HttpContext.Items["computer"] as Computer;
 
             _mapper.Map(input, computer);
-            await _repositoryContext.SaveChangesAsync();
+            await _repository.SaveAsync();
 
             return NoContent();
         }
@@ -88,8 +84,8 @@ namespace PowerConsumptionAPI.Controllers
         {
             var computer = HttpContext.Items["computer"] as Computer;
 
-            _repositoryContext.Remove(computer);
-            await _repositoryContext.SaveChangesAsync();
+            _repository.Computer.DeleteComputer(computer);
+            await _repository.SaveAsync();
 
             return NoContent();
         }

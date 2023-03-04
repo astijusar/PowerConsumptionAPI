@@ -29,7 +29,7 @@ namespace PowerConsumptionAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Computers");
+                    b.ToTable("Computers", (string)null);
                 });
 
             modelBuilder.Entity("PowerConsumptionAPI.Models.PowerConsumption", b =>
@@ -58,7 +58,7 @@ namespace PowerConsumptionAPI.Migrations
 
                     b.HasIndex("ComputerId");
 
-                    b.ToTable("PowerConsumptions");
+                    b.ToTable("PowerConsumptions", (string)null);
                 });
 
             modelBuilder.Entity("PowerConsumptionAPI.Models.PowerConsumption", b =>
