@@ -19,7 +19,7 @@ namespace PowerConsumptionAPI.Filters.ActionFilters
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             var method = context.HttpContext.Request.Method;
-            var trackChanges = (method.Equals("PUT") || method.Equals("PATCH")) ? true : false;
+            var trackChanges = (method.Equals("PUT") || method.Equals("PATCH") || method.Equals("POST")) ? true : false;
             var id = (string)context.ActionArguments["computerId"]!;
 
             var computer = trackChanges ?

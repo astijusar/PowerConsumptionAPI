@@ -49,8 +49,12 @@ namespace PowerConsumptionAPI.Controllers
         [ServiceFilter(typeof(ValidateComputerExistsAttribute))]
         public async Task<IActionResult> SavePowerConsumptionData(string computerId, [FromBody] IEnumerable<PowerConsumptionCreationDto> input)
         {
+            var computer = HttpContext.Items["computer"] as Computer;
+
             var powerConsumption = _mapper.Map<IEnumerable<PowerConsumption>>(input);
             powerConsumption.ToList().ForEach(p => p.ComputerId = computerId);
+
+            computer.Inactivity = powerConsumption.MaxBy(p => p.Time).Inactivity;
 
             _repository.PowerConsumption.CreatePowerConsumptions(powerConsumption);
             await _repository.SaveAsync();

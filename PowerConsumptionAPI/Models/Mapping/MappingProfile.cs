@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using PowerConsumptionAPI.Models.DTOs.Computer;
 using PowerConsumptionAPI.Models.DTOs.PowerConsumption;
+using PowerConsumptionAPI.Repository;
 
 namespace PowerConsumptionAPI.Models.Mapping
 {
@@ -8,9 +9,7 @@ namespace PowerConsumptionAPI.Models.Mapping
     {
         public MappingProfile()
         {
-            CreateMap<Computer, ComputerDto>()
-                .ForMember(dest => dest.Inactivity,
-                    opt => opt.MapFrom(src => src.PowerConsumptionData.FirstOrDefault().Inactivity));
+            CreateMap<Computer, ComputerDto>();
             CreateMap<ComputerCreationDto, Computer>();
             CreateMap<ComputerUpdateDto, Computer>();
 
