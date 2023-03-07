@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -13,34 +14,22 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("CorsPolicy", builder =>
-        builder.AllowAnyOrigin()
-         .AllowAnyMethod()
-         .AllowAnyHeader());
-});
-
-builder.Services.Configure<IISOptions>(options =>
-{
-
-});
+builder.Services.ConfigureCors();
+builder.Services.ConfigureIIS();
 
 builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
     options.SuppressModelStateInvalidFilter = true;
 });
 
-var _connectionString = builder.Configuration.GetConnectionString("sqlConnection");
-
-builder.Services.AddDbContext<RepositoryContext>(
-        options => options
-            .UseMySql(_connectionString, ServerVersion.AutoDetect(_connectionString))
-);
+builder.Services.ConfigureSqlContext(builder.Configuration);
+builder.Services.AddAuthentication();
+builder.Services.ConfigureIdentity();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(typeof(Program));
+
 builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
 builder.Services.AddScoped<ValidationFilterAttribute>();
 builder.Services.AddScoped<ValidateComputerExistsAttribute>();
@@ -69,6 +58,7 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
     ForwardedHeaders = ForwardedHeaders.All
 });
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
