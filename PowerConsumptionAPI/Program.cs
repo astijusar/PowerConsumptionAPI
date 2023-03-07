@@ -7,6 +7,7 @@ using PowerConsumptionAPI.Extensions;
 using PowerConsumptionAPI.Filters.ActionFilters;
 using PowerConsumptionAPI.Models;
 using PowerConsumptionAPI.Repository;
+using PowerConsumptionAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +35,7 @@ builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
 builder.Services.AddScoped<ValidationFilterAttribute>();
 builder.Services.AddScoped<ValidateComputerExistsAttribute>();
+builder.Services.AddScoped<IAuthenticationManager, AuthenticationManager>();
 
 var app = builder.Build();
 
