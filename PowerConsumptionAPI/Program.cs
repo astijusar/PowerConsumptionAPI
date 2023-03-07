@@ -29,7 +29,7 @@ builder.Services.ConfigureJWT(builder.Configuration);
 builder.Services.ConfigureIdentity();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.ConfigureSwagger();
 builder.Services.AddAutoMapper(typeof(Program));
 
 builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
