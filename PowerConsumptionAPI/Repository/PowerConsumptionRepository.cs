@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PowerConsumptionAPI.Models;
 using PowerConsumptionAPI.Models.RequestFeatures;
+using PowerConsumptionAPI.Repository.Extensions;
 using System.Linq.Expressions;
 
 namespace PowerConsumptionAPI.Repository
@@ -34,7 +35,7 @@ namespace PowerConsumptionAPI.Repository
                  (p.CpuPowerDraw + p.GpuPowerDraw) >= param.MinTotalDraw && (p.CpuPowerDraw + p.GpuPowerDraw) <= param.MaxTotalDraw &&
                  p.CpuPowerDraw >= param.MinCpuDraw && p.CpuPowerDraw <= param.MaxCpuDraw &&
                  p.GpuPowerDraw >= param.MinGpuDraw && p.GpuPowerDraw <= param.MaxGpuDraw), trackChanges)
-            .OrderByDescending(p => p.Time)
+            .Sort(param.OrderBy)
             .Take(param.Count)
             .ToListAsync();
 

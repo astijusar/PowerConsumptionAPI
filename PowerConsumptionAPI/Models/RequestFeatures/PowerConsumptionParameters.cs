@@ -18,6 +18,7 @@ namespace PowerConsumptionAPI.Models.RequestFeatures
         }
 
         public DateTime Cursor { get; set; } = DateTime.Now;
+        public string OrderBy { get; set; }
 
         public uint MinInactivity { get; set; }
         public uint MaxInactivity { get; set; } = int.MaxValue;
