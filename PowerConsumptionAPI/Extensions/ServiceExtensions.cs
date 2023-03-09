@@ -83,6 +83,8 @@ namespace PowerConsumptionAPI.Extensions
         {
             services.AddSwaggerGen(s =>
             {
+                s.EnableAnnotations();
+
                 s.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     In = ParameterLocation.Header,

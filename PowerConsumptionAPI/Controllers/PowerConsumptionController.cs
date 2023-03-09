@@ -28,15 +28,16 @@ namespace PowerConsumptionAPI.Controllers
 
         [HttpGet]
         [ServiceFilter(typeof(ValidateComputerExistsAttribute))]
+        [ServiceFilter(typeof(ValidatePowerConsumptionParametersAttribute))]
         public async Task<IActionResult> GetPowerConsumptionData(string computerId, [FromQuery] PowerConsumptionParameters parameters)
         {
             var powerConsumption = await _repository.PowerConsumption.GetPowerConsumptionsAsync(computerId, parameters, false);
 
             DateTime? nextCursor = powerConsumption.Any()
-                ? powerConsumption.LastOrDefault().Time : null;
+                ? parameters.Cursor = powerConsumption.LastOrDefault().Time : null;
 
             var hasNextPage = nextCursor != null
-                ? await _repository.PowerConsumption.AnyAsync(p => p.ComputerId == computerId && p.Time < nextCursor) : false;
+                ? await _repository.PowerConsumption.AnyAsync(computerId, parameters) : false;
 
             var powerConsumptionDto = _mapper.Map<IEnumerable<PowerConsumptionDto>>(powerConsumption);
 

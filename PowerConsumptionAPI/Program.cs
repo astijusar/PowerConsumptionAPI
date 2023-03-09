@@ -35,6 +35,7 @@ builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
 builder.Services.AddScoped<ValidationFilterAttribute>();
 builder.Services.AddScoped<ValidateComputerExistsAttribute>();
+builder.Services.AddScoped<ValidatePowerConsumptionParametersAttribute>();
 builder.Services.AddScoped<IAuthenticationManager, AuthenticationManager>();
 
 var app = builder.Build();
