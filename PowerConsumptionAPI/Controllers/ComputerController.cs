@@ -11,7 +11,6 @@ using PowerConsumptionAPI.Repository;
 namespace PowerConsumptionAPI.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize]
     [ApiController]
     public class ComputerController : ControllerBase
     {
