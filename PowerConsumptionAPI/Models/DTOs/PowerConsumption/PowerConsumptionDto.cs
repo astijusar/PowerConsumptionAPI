@@ -7,6 +7,6 @@
         public int Inactivity { get; set; }
         public float CpuPowerDraw { get; set; }
         public float GpuPowerDraw { get; set; }
-        public float TotalPowerDraw => CpuPowerDraw + GpuPowerDraw;
+        public float TotalPowerDraw { get; set; }
     }
 }
