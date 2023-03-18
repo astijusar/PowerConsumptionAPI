@@ -31,18 +31,11 @@ namespace PowerConsumptionAPI.Controllers
         [ServiceFilter(typeof(ValidatePowerConsumptionParametersAttribute))]
         public async Task<IActionResult> GetPowerConsumptionData(string computerId, [FromQuery] PowerConsumptionParameters parameters)
         {
-            var powerConsumption = await _repository.PowerConsumption.GetPowerConsumptionsAsync(computerId, parameters, false);
+            var powerConsumptions = await _repository.PowerConsumption.GetPowerConsumptionsAsync(computerId, parameters, false);
 
-            DateTime? nextCursor = powerConsumption.Any()
-                ? parameters.Cursor = powerConsumption.LastOrDefault().Time : null;
+            var powerConsunptionsDto = _mapper.Map<IEnumerable<PowerConsumptionDto>>(powerConsumptions);
 
-            var hasNextPage = nextCursor != null
-                ? await _repository.PowerConsumption.AnyAsync(computerId, parameters) : false;
-
-            var powerConsumptionDto = _mapper.Map<IEnumerable<PowerConsumptionDto>>(powerConsumption);
-
-            return Ok(new { data = powerConsumptionDto, 
-                pagination = new Metadata { CurrentCursor = parameters.Cursor, NextCursor = hasNextPage ? nextCursor : null} });
+            return Ok(powerConsunptionsDto);
         }
 
         [HttpPost("collection")]

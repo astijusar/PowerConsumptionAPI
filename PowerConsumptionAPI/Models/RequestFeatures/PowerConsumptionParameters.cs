@@ -17,7 +17,7 @@ namespace PowerConsumptionAPI.Models.RequestFeatures
             }
         }
 
-        public DateTime Cursor { get; set; } = DateTime.Now;
+        public int PrevCount { get; set; } = 0;
         public string OrderBy { get; set; }
 
         public uint MinInactivity { get; set; }

@@ -10,6 +10,5 @@ namespace PowerConsumptionAPI.Repository
         Task<IEnumerable<PowerConsumption>> GetPowerConsumptionsByIdsAsync(string computerId, IEnumerable<Guid> ids, bool trackChanges);
         void CreatePowerConsumptions(IEnumerable<PowerConsumption> powerConsumptions);
         void DeletePowerConsumptions(IEnumerable<PowerConsumption> powerConsumptions);
-        Task<bool> AnyAsync(string computerId, PowerConsumptionParameters param);
     }
 }
