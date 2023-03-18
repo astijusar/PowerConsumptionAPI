@@ -24,13 +24,25 @@ namespace PowerConsumptionAPI.Repository
         public void DeletePowerConsumptions(IEnumerable<PowerConsumption> powerConsumptions) =>
             DeleteRange(powerConsumptions);
 
-        public async Task<IEnumerable<PowerConsumption>> GetPowerConsumptionsAsync(string computerId, PowerConsumptionParameters param, bool trackChanges) => 
-            await FindByCondition(p => p.ComputerId == computerId, trackChanges)
+        public async Task<IEnumerable<PowerConsumption>> GetPowerConsumptionsAsync(string computerId, PowerConsumptionParameters param, bool trackChanges)
+        {
+            if (param.GroupBy == null)
+            {
+                return await FindByCondition(p => p.ComputerId == computerId, trackChanges)
                 .FilterPowerConsumptions(param)
                 .Sort(param.OrderBy)
                 .Skip(param.PrevCount)
                 .Take(param.Count)
                 .ToListAsync();
+            }
+
+            return await FindByCondition(p => p.ComputerId == computerId, trackChanges)
+                .FilterPowerConsumptions(param)
+                .GroupBy(param.GroupBy)
+                .Skip(param.PrevCount)
+                .Take(param.Count)
+                .ToListAsync();
+        }
 
         public async Task<IEnumerable<PowerConsumption>> GetPowerConsumptionsByIdsAsync(string computerId, IEnumerable<Guid> ids, bool trackChanges) =>
             await FindByCondition(p => p.ComputerId == computerId && ids.Contains(p.Id), trackChanges)

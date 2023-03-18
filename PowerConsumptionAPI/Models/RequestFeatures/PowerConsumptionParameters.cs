@@ -19,6 +19,7 @@ namespace PowerConsumptionAPI.Models.RequestFeatures
 
         public int PrevCount { get; set; } = 0;
         public string OrderBy { get; set; }
+        public string GroupBy { get; set; }
 
         public uint MinInactivity { get; set; }
         public uint MaxInactivity { get; set; } = int.MaxValue;
