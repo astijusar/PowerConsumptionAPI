@@ -10,7 +10,7 @@ namespace PowerConsumptionAPI.Repository.Extensions
         public static IQueryable<PowerConsumption> FilterPowerConsumptions(this IQueryable<PowerConsumption> powerConsumptions, PowerConsumptionParameters param) =>
             powerConsumptions.Where(p => p.Inactivity >= param.MinInactivity && p.Inactivity <= param.MaxInactivity &&
                  p.Time >= param.MinTime && p.Time <= param.MaxTime &&
-                 (p.CpuPowerDraw + p.GpuPowerDraw) >= param.MinTotalDraw && (p.CpuPowerDraw + p.GpuPowerDraw) <= param.MaxTotalDraw &&
+                 p.TotalPowerDraw >= param.MinTotalDraw && p.TotalPowerDraw <= param.MaxTotalDraw &&
                  p.CpuPowerDraw >= param.MinCpuDraw && p.CpuPowerDraw <= param.MaxCpuDraw &&
                  p.GpuPowerDraw >= param.MinGpuDraw && p.GpuPowerDraw <= param.MaxGpuDraw);
 

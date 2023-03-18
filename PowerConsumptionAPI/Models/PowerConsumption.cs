@@ -20,7 +20,8 @@ namespace PowerConsumptionAPI.Models
         [Range(0, int.MaxValue, ErrorMessage = "GpuPowerDraw field is required and must be a positive number.")]
         public float GpuPowerDraw { get; set; }
 
-        public float TotalPowerDraw => CpuPowerDraw + GpuPowerDraw;
+        [Range(0, int.MaxValue, ErrorMessage = "TotalPowerDraw field is required and must be a positive number.")]
+        public float TotalPowerDraw { get; set; }
 
         [Required]
         [ForeignKey(nameof(Computer))]
