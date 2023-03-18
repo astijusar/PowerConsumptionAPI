@@ -21,12 +21,12 @@ namespace PowerConsumptionAPI.Repository.Extensions
         public static IQueryable<PowerConsumption> Sort(this IQueryable<PowerConsumption> powerConsumptions, string orderBy)
         {
             if (string.IsNullOrEmpty(orderBy))
-                return powerConsumptions.OrderBy(p => p.Time);
+                return powerConsumptions.OrderByDescending(p => p.Time);
 
             var orderQuery = OrderQueryBuilder.CreateOrderQuery<PowerConsumption>(orderBy);
 
             if (string.IsNullOrWhiteSpace(orderQuery))
-                return powerConsumptions.OrderBy(p => p.Time);
+                return powerConsumptions.OrderByDescending(p => p.Time);
 
             return powerConsumptions.OrderBy(orderQuery);
         }
