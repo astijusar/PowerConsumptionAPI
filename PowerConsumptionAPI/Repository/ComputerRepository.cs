@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PowerConsumptionAPI.Models;
+using PowerConsumptionAPI.Models.RequestFeatures;
+using PowerConsumptionAPI.Repository.Extensions;
 
 namespace PowerConsumptionAPI.Repository
 {
@@ -15,8 +17,11 @@ namespace PowerConsumptionAPI.Repository
 
         public void DeleteComputer(Computer computer) => Delete(computer);
 
-        public async Task<IEnumerable<Computer>> GetAllComputersAsync(bool trackChanges) =>
+        public async Task<IEnumerable<Computer>> GetAllComputersAsync(ComputerParameters param, bool trackChanges) =>
             await FindAll(trackChanges)
+            .Sort(param.OrderBy)
+            .Skip(param.PrevCount)
+            .Take(param.Count)
             .ToListAsync();
 
         public async Task<Computer> GetComputerAsync(string computerId, bool trackChanges) =>

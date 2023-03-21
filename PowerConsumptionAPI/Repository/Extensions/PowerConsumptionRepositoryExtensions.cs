@@ -9,7 +9,7 @@ using System.Linq.Dynamic.Core;
 
 namespace PowerConsumptionAPI.Repository.Extensions
 {
-    public static class RepositoryPowerConsumptionExtensions
+    public static class PowerConsumptionRepositoryExtensions
     {
         public static IQueryable<PowerConsumption> FilterPowerConsumptions(this IQueryable<PowerConsumption> powerConsumptions, PowerConsumptionParameters param) =>
             powerConsumptions.Where(p => p.Inactivity >= param.MinInactivity && p.Inactivity <= param.MaxInactivity &&

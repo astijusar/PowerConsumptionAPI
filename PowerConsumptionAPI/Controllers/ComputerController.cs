@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using PowerConsumptionAPI.Filters.ActionFilters;
 using PowerConsumptionAPI.Models;
 using PowerConsumptionAPI.Models.DTOs.Computer;
+using PowerConsumptionAPI.Models.RequestFeatures;
 using PowerConsumptionAPI.Repository;
 
 namespace PowerConsumptionAPI.Controllers
@@ -26,9 +27,9 @@ namespace PowerConsumptionAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetComputers()
+        public async Task<IActionResult> GetComputers([FromQuery] ComputerParameters parameters)
         {
-            var computers = await _repository.Computer.GetAllComputersAsync(false);
+            var computers = await _repository.Computer.GetAllComputersAsync(parameters, false);
 
             var computersDto = _mapper.Map<IEnumerable<ComputerDto>>(computers);
 
