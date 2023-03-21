@@ -41,7 +41,7 @@ namespace PowerConsumptionAPI.Repository.Extensions
                         .Select(g => new PowerConsumption
                         {
                             Time = g.Key,
-                            Inactivity = g.Select(p => p.Inactivity).FirstOrDefault(),
+                            Inactivity = g.Sum(p => p.Inactivity),
                             CpuPowerDraw = g.Sum(p => p.CpuPowerDraw),
                             GpuPowerDraw = g.Sum(p => p.GpuPowerDraw),
                             TotalPowerDraw = g.Sum(p => p.TotalPowerDraw)
@@ -53,7 +53,7 @@ namespace PowerConsumptionAPI.Repository.Extensions
                         .Select(g => new PowerConsumption
                         {
                             Time = g.Key,
-                            Inactivity = g.Select(p => p.Inactivity).FirstOrDefault(),
+                            Inactivity = g.Sum(p => p.Inactivity),
                             CpuPowerDraw = g.Sum(p => p.CpuPowerDraw),
                             GpuPowerDraw = g.Sum(p => p.GpuPowerDraw),
                             TotalPowerDraw = g.Sum(p => p.TotalPowerDraw)
@@ -65,7 +65,7 @@ namespace PowerConsumptionAPI.Repository.Extensions
                         .Select(g => new PowerConsumption
                         {
                             Time = g.Key,
-                            Inactivity = g.Select(p => p.Inactivity).FirstOrDefault(),
+                            Inactivity = g.Sum(p => p.Inactivity),
                             CpuPowerDraw = g.Sum(p => p.CpuPowerDraw),
                             GpuPowerDraw = g.Sum(p => p.GpuPowerDraw),
                             TotalPowerDraw = g.Sum(p => p.TotalPowerDraw)
@@ -77,7 +77,7 @@ namespace PowerConsumptionAPI.Repository.Extensions
                         .Select(g => new PowerConsumption
                         {
                             Time = g.Key,
-                            Inactivity = g.Select(p => p.Inactivity).FirstOrDefault(),
+                            Inactivity = g.Sum(p => p.Inactivity),
                             CpuPowerDraw = g.Sum(p => p.CpuPowerDraw),
                             GpuPowerDraw = g.Sum(p => p.GpuPowerDraw),
                             TotalPowerDraw = g.Sum(p => p.TotalPowerDraw)

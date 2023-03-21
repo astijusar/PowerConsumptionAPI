@@ -16,6 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 builder.Services.ConfigureCors();
+
 builder.Services.ConfigureIIS();
 
 builder.Services.Configure<ApiBehaviorOptions>(options =>
@@ -51,11 +52,11 @@ else
     app.UseHsts();
 }
 
+app.UseCors("CorsPolicy");
+
 app.ConfigureExceptionHandler(app.Logger);
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
-app.UseCors("CorsPolicy");
 
 app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
