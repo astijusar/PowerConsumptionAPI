@@ -16,10 +16,12 @@ namespace PowerConsumptionAPI.Models
         {
             base.OnModelCreating(builder);
 
-            builder.ApplyConfiguration(new RoleConfiguration());
+            //builder.ApplyConfiguration(new RoleConfiguration());
         }
 
         public DbSet<Computer> Computers { get; set; }
         public DbSet<PowerConsumption> PowerConsumptions { get; set; }
+        public DbSet<ElectricityCost> ElectricityCosts { get; set; }
+        public DbSet<Limit> Limits { get; set; }
     }
 }

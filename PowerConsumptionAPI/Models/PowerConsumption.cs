@@ -9,6 +9,7 @@ namespace PowerConsumptionAPI.Models
         public Guid Id { get; set; }
         public DateTime Time { get; set; }
 
+
         [Range(0, int.MaxValue, ErrorMessage = "Inactivity field is required and must be a positive number.")]
         public int Inactivity { get; set; }
 
@@ -20,8 +21,10 @@ namespace PowerConsumptionAPI.Models
         [Range(0, int.MaxValue, ErrorMessage = "GpuPowerDraw field is required and must be a positive number.")]
         public float GpuPowerDraw { get; set; }
 
+
         [Range(0, int.MaxValue, ErrorMessage = "TotalPowerDraw field is required and must be a positive number.")]
         public float TotalPowerDraw { get; set; }
+
 
         [Required]
         [ForeignKey(nameof(Computer))]
