@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using PowerConsumptionAPI.Filters.ActionFilters;
 using PowerConsumptionAPI.Models;
 using PowerConsumptionAPI.Models.DTOs.User;
+using PowerConsumptionAPI.Repository;
 using PowerConsumptionAPI.Services;
 using System.Xml.Linq;
 
@@ -18,14 +19,30 @@ namespace PowerConsumptionAPI.Controllers
         private readonly IMapper _mapper;
         private readonly UserManager<User> _userManager;
         private readonly IAuthenticationManager _authManager;
+        private readonly IRepositoryManager _repository;
 
         public AuthenticationController(ILogger<AuthenticationController> logger, IMapper mapper, UserManager<User> userManager,
-            IAuthenticationManager authManager)
+            IAuthenticationManager authManager, IRepositoryManager repository)
         {
             _logger = logger;
             _mapper = mapper;
             _userManager = userManager;
             _authManager = authManager;
+            _repository = repository;
+        }
+
+        [HttpGet("computer/{computerId}/test")]
+        public async Task<IActionResult> TestComputer(string computerId)
+        {
+            var computer = await _repository.Computer.GetComputerAsync(computerId, false);
+
+            if (computer == null)
+            {
+                _logger.LogWarning($"Computer with id: {computerId} does not exist in the database.");
+                return NotFound();
+            }
+
+            return Ok();
         }
 
         [HttpPost("login")]
