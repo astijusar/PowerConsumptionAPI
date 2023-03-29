@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using PowerConsumptionAPI.Models.DTOs.Computer;
+using PowerConsumptionAPI.Models.DTOs.ElectricityCost;
 using PowerConsumptionAPI.Models.DTOs.Limit;
 using PowerConsumptionAPI.Models.DTOs.PowerConsumption;
 using PowerConsumptionAPI.Models.DTOs.User;
@@ -22,6 +23,9 @@ namespace PowerConsumptionAPI.Models.Mapping
 
             CreateMap<Limit, LimitDto>();
             CreateMap<LimitCreationDto, Limit>();
+
+            CreateMap<ElectricityCost, ElectricityCostDto>();
+            CreateMap<ElectricityCostCreationDto, ElectricityCost>();
         }
     }
 }

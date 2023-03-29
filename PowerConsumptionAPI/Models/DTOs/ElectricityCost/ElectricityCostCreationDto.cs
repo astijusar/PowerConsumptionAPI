@@ -1,19 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace PowerConsumptionAPI.Models
+namespace PowerConsumptionAPI.Models.DTOs.ElectricityCost
 {
-    public class ElectricityCost
+    public class ElectricityCostCreationDto
     {
-        [Key]
-        public Guid Id { get; set; }
-
         [Required]
         public TimeOnly From { get; set; }
 
         [Required]
         public TimeOnly To { get; set; }
-
-        // TODO: round to 2 decimal places
 
         [Range(0, int.MaxValue, ErrorMessage = "Price field is required and must be a positive number.")]
         public decimal Price { get; set; }

@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PowerConsumptionAPI.Models.DTOs.Limit;
+using PowerConsumptionAPI.Models.DTOs.ElectricityCost;
 using PowerConsumptionAPI.Models;
 using PowerConsumptionAPI.Repository;
 using PowerConsumptionAPI.Filters.ActionFilters;
+using PowerConsumptionAPI.ModelBinders;
 
 namespace PowerConsumptionAPI.Controllers
 {
@@ -23,6 +25,16 @@ namespace PowerConsumptionAPI.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet]
+        public IActionResult GetElectricityCosts()
+        {
+            var electricityCosts = _repository.ElectricityCost.GetAllElectricityCosts(false);
+
+            var electricityCostsDto = _mapper.Map<IEnumerable<ElectricityCostDto>>(electricityCosts);
+
+            return Ok(electricityCostsDto);
+        }
+
         [HttpGet("limit")]
         public IActionResult GetLimits()
         {
@@ -31,6 +43,18 @@ namespace PowerConsumptionAPI.Controllers
             var limitsDto = _mapper.Map<IEnumerable<LimitDto>>(limits);
 
             return Ok(limitsDto);
+        }
+
+        [HttpPost("collection")]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        public IActionResult CreateElectricityCosts([FromBody] IEnumerable<ElectricityCostCreationDto> electricityCostDto)
+        {
+            var electricityCosts = _mapper.Map<IEnumerable<ElectricityCost>>(electricityCostDto);
+
+            _repository.ElectricityCost.CreateElectricityCosts(electricityCosts);
+            _repository.Save();
+
+            return Ok();
         }
 
         [HttpPost("limit")]
@@ -44,6 +68,24 @@ namespace PowerConsumptionAPI.Controllers
             _repository.Save();
 
             return Ok();
+        }
+
+        [HttpDelete("collection/({electricityCostsIds})")]
+        public IActionResult DeleteElectricityCosts(
+            [ModelBinder(BinderType = typeof(ArrayModelBinder))] IEnumerable<Guid> electricityCostsIds)
+        {
+            var electricityCosts = _repository.ElectricityCost.GetElectricityCostsById(electricityCostsIds, false);
+
+            if (!electricityCosts.Any())
+            {
+                _logger.LogWarning($"There is no electricity cost data with ids: {electricityCostsIds}");
+                return NotFound();
+            }
+
+            _repository.ElectricityCost.DeleteElectricityCosts(electricityCosts);
+            _repository.Save();
+
+            return NoContent();
         }
 
         [HttpDelete("limit")]
