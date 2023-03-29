@@ -7,6 +7,7 @@ namespace PowerConsumptionAPI.Repository
         private RepositoryContext _repositoryContext;
         private IComputerRepository _computerRepository;
         private IPowerConsumptionRepository _powerConsumptionRepository;
+        private ILimitRepository _limitRepository;
 
         public RepositoryManager(RepositoryContext repositoryContext)
         {
@@ -35,6 +36,18 @@ namespace PowerConsumptionAPI.Repository
             }
         }
 
+        public ILimitRepository Limit
+        {
+            get
+            {
+                if (_limitRepository == null)
+                    _limitRepository = new LimitRepository(_repositoryContext);
+
+                return _limitRepository;
+            }
+        }   
+
         public async Task SaveAsync() => await _repositoryContext.SaveChangesAsync();
+        public void Save() => _repositoryContext.SaveChanges();
     }
 }

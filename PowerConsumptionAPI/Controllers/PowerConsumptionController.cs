@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using PowerConsumptionAPI.Filters.ActionFilters;
 using PowerConsumptionAPI.ModelBinders;
 using PowerConsumptionAPI.Models;
+using PowerConsumptionAPI.Models.DTOs.Limit;
 using PowerConsumptionAPI.Models.DTOs.PowerConsumption;
 using PowerConsumptionAPI.Models.RequestFeatures;
 using PowerConsumptionAPI.Repository;
@@ -36,6 +37,29 @@ namespace PowerConsumptionAPI.Controllers
             var powerConsunptionsDto = _mapper.Map<IEnumerable<PowerConsumptionDto>>(powerConsumptions);
 
             return Ok(powerConsunptionsDto);
+        }
+
+        [HttpGet("/api/power_consumption/limit")]
+        public IActionResult GetLimits()
+        {
+            var limits = _repository.Limit.GetAllLimits(LimitType.Power, false);
+
+            var limitsDto = _mapper.Map<IEnumerable<LimitDto>>(limits);
+
+            return Ok(limitsDto);
+        }
+
+        [HttpPost("/api/power_consumption/limit")]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        public IActionResult CreateLimit([FromBody] LimitCreationDto limitDto)
+        {
+            var limit = _mapper.Map<Limit>(limitDto);
+            limit.LimitType = LimitType.Power;
+
+            _repository.Limit.CreateLimit(limit);
+            _repository.Save();
+
+            return Ok();
         }
 
         [HttpPost("collection")]
@@ -71,6 +95,23 @@ namespace PowerConsumptionAPI.Controllers
 
             _repository.PowerConsumption.DeletePowerConsumptions(powerConsumptions);
             await _repository.SaveAsync();
+
+            return NoContent();
+        }
+
+        [HttpDelete("/api/power_consumption/limit")]
+        public IActionResult DeleteLimit(Guid limitId)
+        {
+            var limit = _repository.Limit.GetLimitById(limitId, LimitType.Power, false);
+
+            if (limit == null)
+            {
+                _logger.LogWarning($"There is no limit with id: {limitId}");
+                return NotFound();
+            }
+
+            _repository.Limit.DeleteLimit(limit);
+            _repository.Save();
 
             return NoContent();
         }
