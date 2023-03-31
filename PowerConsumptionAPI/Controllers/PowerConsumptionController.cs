@@ -27,12 +27,23 @@ namespace PowerConsumptionAPI.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet("/api/computer/power_consumption")]
+        [ServiceFilter(typeof(ValidatePowerConsumptionParametersAttribute))]
+        public async Task<IActionResult> GetPowerConsumptionData([FromQuery] PowerConsumptionParameters parameters)
+        {
+            var powerConsumptions = await _repository.PowerConsumption.GetPowerConsumptionsAsync(parameters, false);
+
+            var powerConsunptionsDto = _mapper.Map<IEnumerable<PowerConsumptionDto>>(powerConsumptions);
+
+            return Ok(powerConsunptionsDto);
+        }
+
         [HttpGet]
         [ServiceFilter(typeof(ValidateComputerExistsAttribute))]
         [ServiceFilter(typeof(ValidatePowerConsumptionParametersAttribute))]
-        public async Task<IActionResult> GetPowerConsumptionData(string computerId, [FromQuery] PowerConsumptionParameters parameters)
+        public async Task<IActionResult> GetPowerConsumptionDataForComputer(string computerId, [FromQuery] PowerConsumptionParameters parameters)
         {
-            var powerConsumptions = await _repository.PowerConsumption.GetPowerConsumptionsAsync(computerId, parameters, false);
+            var powerConsumptions = await _repository.PowerConsumption.GetPowerConsumptionsAsync(parameters, false, computerId);
 
             var powerConsunptionsDto = _mapper.Map<IEnumerable<PowerConsumptionDto>>(powerConsumptions);
 

@@ -6,7 +6,7 @@ namespace PowerConsumptionAPI.Repository
 {
     public interface IPowerConsumptionRepository
     {
-        Task<IEnumerable<PowerConsumption>> GetPowerConsumptionsAsync(string computerId, PowerConsumptionParameters parameters, bool trackChanges);
+        Task<IEnumerable<PowerConsumption>> GetPowerConsumptionsAsync(PowerConsumptionParameters parameters, bool trackChanges, string computerId = null);
         Task<IEnumerable<PowerConsumption>> GetPowerConsumptionsByIdsAsync(string computerId, IEnumerable<Guid> ids, bool trackChanges);
         void CreatePowerConsumptions(IEnumerable<PowerConsumption> powerConsumptions);
         void DeletePowerConsumptions(IEnumerable<PowerConsumption> powerConsumptions);
