@@ -5,4 +5,4 @@ The product idea is to create a system that collects information about users com
 Once the information has been collected, it can be viewed by an administrator using a web application which would provide various charts, tables and ways to lower power consumptions.
 The administrator can also check electricity prices and obtain additional information.
 
-This API is used to collect the data from the computer applications and to respond requests made by a React website.
+This API is used to collect the data from the computer applications and to respond to requests made by a React website.
