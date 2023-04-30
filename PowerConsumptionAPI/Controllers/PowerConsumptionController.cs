@@ -91,6 +91,25 @@ namespace PowerConsumptionAPI.Controllers
             return Ok();
         }
 
+        [HttpPut]
+        [HttpPut("/api/power_consumption/limit/{limitId}")]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        public async Task<IActionResult> UpdateLimit(Guid limitId, LimitUpdateDto input)
+        {
+            var limit = _repository.Limit.GetLimitById(limitId, LimitType.Power, true);
+
+            if (limit == null)
+            {
+                _logger.LogWarning($"Limit with id: {limitId} does not exist in the database");
+                return NotFound();
+            }
+
+            _mapper.Map(input, limit);
+            await _repository.SaveAsync();
+
+            return NoContent();
+        }
+
         [HttpDelete("collection/({powerConsumptionIds})")]
         [ServiceFilter(typeof(ValidateComputerExistsAttribute))]
         public async Task<IActionResult> DeletePowerConsumptionData(string computerId,
@@ -113,7 +132,7 @@ namespace PowerConsumptionAPI.Controllers
         [HttpDelete("/api/power_consumption/limit")]
         public IActionResult DeleteLimit(Guid limitId)
         {
-            var limit = _repository.Limit.GetLimitById(limitId, LimitType.Power, false);
+            var limit = _repository.Limit.GetLimitById(limitId, LimitType.Power, true);
 
             if (limit == null)
             {
