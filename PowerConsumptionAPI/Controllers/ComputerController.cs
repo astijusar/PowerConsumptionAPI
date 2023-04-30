@@ -57,7 +57,6 @@ namespace PowerConsumptionAPI.Controllers
         public async Task<IActionResult> CreateComputer([FromBody] ComputerCreationDto input)
         {
             var computer = _mapper.Map<Computer>(input);
-            computer.Name = computer.Id;
 
             _repository.Computer.CreateComputer(computer);
             await _repository.SaveAsync();
