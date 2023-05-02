@@ -23,6 +23,7 @@ namespace PowerConsumptionAPI.Models.Mapping
 
             CreateMap<Limit, LimitDto>();
             CreateMap<LimitCreationDto, Limit>();
+            CreateMap<LimitUpdateDto, Limit>();
 
             CreateMap<ElectricityCost, ElectricityCostDto>();
             CreateMap<ElectricityCostCreationDto, ElectricityCost>();
