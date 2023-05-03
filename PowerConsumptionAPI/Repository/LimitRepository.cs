@@ -19,8 +19,16 @@ namespace PowerConsumptionAPI.Repository
             FindByCondition(l => l.LimitType == type, trackChanges)
             .ToList();
 
-        public Limit GetLimitById(Guid id, LimitType type, bool trackChanges) =>
-            FindByCondition(l => l.Id.Equals(id) && l.LimitType == type, trackChanges)
-            .SingleOrDefault();
+        public Limit GetLimitById(Guid id, bool trackChanges, LimitType? type = null)
+        {
+            if (type == null)
+            {
+                return FindByCondition(l => l.Id.Equals(id), trackChanges)
+                    .SingleOrDefault();
+            }
+
+            return FindByCondition(l => l.Id.Equals(id) && l.LimitType == type, trackChanges)
+                    .SingleOrDefault();
+        }
     }
 }

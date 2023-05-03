@@ -91,7 +91,7 @@ namespace PowerConsumptionAPI.Controllers
         [HttpDelete("limit")]
         public IActionResult DeleteLimit(Guid limitId)
         {
-            var limit = _repository.Limit.GetLimitById(limitId, LimitType.Cost, false);
+            var limit = _repository.Limit.GetLimitById(limitId, false, LimitType.Cost);
 
             if (limit == null)
             {

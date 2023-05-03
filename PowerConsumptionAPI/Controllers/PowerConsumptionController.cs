@@ -96,7 +96,7 @@ namespace PowerConsumptionAPI.Controllers
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> UpdateLimit(Guid limitId, LimitUpdateDto input)
         {
-            var limit = _repository.Limit.GetLimitById(limitId, LimitType.Power, true);
+            var limit = _repository.Limit.GetLimitById(limitId, true);
 
             if (limit == null)
             {
@@ -132,7 +132,7 @@ namespace PowerConsumptionAPI.Controllers
         [HttpDelete("/api/power_consumption/limit")]
         public IActionResult DeleteLimit(Guid limitId)
         {
-            var limit = _repository.Limit.GetLimitById(limitId, LimitType.Power, true);
+            var limit = _repository.Limit.GetLimitById(limitId, true, LimitType.Power);
 
             if (limit == null)
             {
