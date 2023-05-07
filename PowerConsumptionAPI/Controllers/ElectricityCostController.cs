@@ -57,6 +57,32 @@ namespace PowerConsumptionAPI.Controllers
             return Ok();
         }
 
+        [HttpPut("collection/({electricityCostsIds})")]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        public IActionResult UpdateElectricityCosts(
+            [ModelBinder(BinderType = typeof(ArrayModelBinder))] IEnumerable<Guid> electricityCostsIds,
+            [FromBody] IEnumerable<ElectricityCostUpdateDto> input)
+        {
+            var electricityCosts = _repository.ElectricityCost.GetElectricityCostsById(electricityCostsIds, true);
+
+            if (electricityCosts == null)
+            {
+                _logger.LogWarning($"Electricity costs with ids: {electricityCostsIds} does not exist in the database");
+                return NotFound();
+            }
+
+            for(int i = 0; i < input.Count(); i++)
+            {
+                electricityCosts.ElementAt(i).From = input.ElementAt(i).From;
+                electricityCosts.ElementAt(i).To = input.ElementAt(i).To;
+                electricityCosts.ElementAt(i).Price = input.ElementAt(i).Price;
+            }
+
+            _repository.Save();
+
+            return NoContent();
+        }
+
         [HttpPost("limit")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public IActionResult CreateLimit([FromBody] LimitCreationDto limitDto)
@@ -74,7 +100,7 @@ namespace PowerConsumptionAPI.Controllers
         public IActionResult DeleteElectricityCosts(
             [ModelBinder(BinderType = typeof(ArrayModelBinder))] IEnumerable<Guid> electricityCostsIds)
         {
-            var electricityCosts = _repository.ElectricityCost.GetElectricityCostsById(electricityCostsIds, false);
+            var electricityCosts = _repository.ElectricityCost.GetElectricityCostsById(electricityCostsIds, true);
 
             if (!electricityCosts.Any())
             {

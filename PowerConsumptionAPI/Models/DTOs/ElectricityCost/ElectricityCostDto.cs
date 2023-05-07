@@ -3,8 +3,8 @@
     public class ElectricityCostDto
     {
         public Guid Id { get; set; }
-        public TimeOnly From { get; set; }
-        public TimeOnly To { get; set; }
+        public string From { get; set; }
+        public string To { get; set; }
         public decimal Price { get; set; }
     }
 }

@@ -27,6 +27,7 @@ namespace PowerConsumptionAPI.Models.Mapping
 
             CreateMap<ElectricityCost, ElectricityCostDto>();
             CreateMap<ElectricityCostCreationDto, ElectricityCost>();
+            CreateMap<ElectricityCostUpdateDto, ElectricityCost>();
         }
     }
 }
