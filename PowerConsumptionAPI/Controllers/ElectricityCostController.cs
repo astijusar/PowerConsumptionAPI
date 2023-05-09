@@ -7,6 +7,9 @@ using PowerConsumptionAPI.Models;
 using PowerConsumptionAPI.Repository;
 using PowerConsumptionAPI.Filters.ActionFilters;
 using PowerConsumptionAPI.ModelBinders;
+using PowerConsumptionAPI.Models.RequestFeatures;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 
 namespace PowerConsumptionAPI.Controllers
 {
@@ -17,12 +20,14 @@ namespace PowerConsumptionAPI.Controllers
         private readonly IRepositoryManager _repository;
         private readonly ILogger<ElectricityCostController> _logger;
         private readonly IMapper _mapper;
+        private readonly RepositoryContext _context;
 
-        public ElectricityCostController(IRepositoryManager repository, ILogger<ElectricityCostController> logger, IMapper mapper)
+        public ElectricityCostController(IRepositoryManager repository, ILogger<ElectricityCostController> logger, IMapper mapper, RepositoryContext context)
         {
             _repository = repository;
             _logger = logger;
             _mapper = mapper;
+            _context = context;
         }
 
         [HttpGet]
@@ -33,6 +38,55 @@ namespace PowerConsumptionAPI.Controllers
             var electricityCostsDto = _mapper.Map<IEnumerable<ElectricityCostDto>>(electricityCosts);
 
             return Ok(electricityCostsDto);
+        }
+
+        [HttpGet("price")]
+        public async Task<IActionResult> GetElectricityPrice([FromQuery] ElectricityPriceParameters parameters)
+        {
+            float cost = 0;
+            var electricityCosts = _repository.ElectricityCost.GetAllElectricityCosts(false);
+
+            if (electricityCosts == null)
+            {
+                return Ok(cost);
+            }
+
+            if (parameters.ComputerId != null)
+            {
+                var powerConsumptions = await _context.PowerConsumptions
+                    .AsNoTracking()
+                    .Where(p => p.ComputerId == parameters.ComputerId && p.Time >= parameters.From && p.Time <= parameters.To)
+                    .ToListAsync();
+
+                if (powerConsumptions == null)
+                {
+                    return Ok(cost);
+                }
+
+                foreach(var power in powerConsumptions)
+                {
+                    cost += power.TotalPowerDraw * (float)electricityCosts.ElementAt(0).Price;
+                }
+            } 
+            else
+            {
+                var powerConsumptions = await _context.PowerConsumptions
+                    .AsNoTracking()
+                    .Where(p => p.Time >= parameters.From && p.Time <= parameters.To)
+                    .ToListAsync();
+
+                if (powerConsumptions == null)
+                {
+                    return Ok(0);
+                }
+
+                foreach (var power in powerConsumptions)
+                {
+                    cost += power.TotalPowerDraw * (float)electricityCosts.ElementAt(0).Price;
+                }
+            }
+
+            return Ok(cost);
         }
 
         [HttpGet("limit")]
