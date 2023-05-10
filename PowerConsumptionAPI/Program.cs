@@ -38,6 +38,7 @@ builder.Services.AddScoped<ValidationFilterAttribute>();
 builder.Services.AddScoped<ValidateComputerExistsAttribute>();
 builder.Services.AddScoped<ValidatePowerConsumptionParametersAttribute>();
 builder.Services.AddScoped<IAuthenticationManager, AuthenticationManager>();
+builder.Services.AddScoped<ICostCalculator, CostCalculator>();
 
 var app = builder.Build();
 

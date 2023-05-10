@@ -10,6 +10,7 @@ using PowerConsumptionAPI.ModelBinders;
 using PowerConsumptionAPI.Models.RequestFeatures;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
+using PowerConsumptionAPI.Services;
 
 namespace PowerConsumptionAPI.Controllers
 {
@@ -20,14 +21,14 @@ namespace PowerConsumptionAPI.Controllers
         private readonly IRepositoryManager _repository;
         private readonly ILogger<ElectricityCostController> _logger;
         private readonly IMapper _mapper;
-        private readonly RepositoryContext _context;
+        private readonly ICostCalculator _costCalculator;
 
-        public ElectricityCostController(IRepositoryManager repository, ILogger<ElectricityCostController> logger, IMapper mapper, RepositoryContext context)
+        public ElectricityCostController(IRepositoryManager repository, ILogger<ElectricityCostController> logger, IMapper mapper, ICostCalculator costCalculator)
         {
             _repository = repository;
             _logger = logger;
             _mapper = mapper;
-            _context = context;
+            _costCalculator = costCalculator;
         }
 
         [HttpGet]
@@ -43,48 +44,7 @@ namespace PowerConsumptionAPI.Controllers
         [HttpGet("price")]
         public async Task<IActionResult> GetElectricityPrice([FromQuery] ElectricityPriceParameters parameters)
         {
-            float cost = 0;
-            var electricityCosts = _repository.ElectricityCost.GetAllElectricityCosts(false);
-
-            if (electricityCosts == null)
-            {
-                return Ok(cost);
-            }
-
-            if (parameters.ComputerId != null)
-            {
-                var powerConsumptions = await _context.PowerConsumptions
-                    .AsNoTracking()
-                    .Where(p => p.ComputerId == parameters.ComputerId && p.Time >= parameters.From && p.Time <= parameters.To)
-                    .ToListAsync();
-
-                if (powerConsumptions == null)
-                {
-                    return Ok(cost);
-                }
-
-                foreach(var power in powerConsumptions)
-                {
-                    cost += power.TotalPowerDraw * (float)electricityCosts.ElementAt(0).Price;
-                }
-            } 
-            else
-            {
-                var powerConsumptions = await _context.PowerConsumptions
-                    .AsNoTracking()
-                    .Where(p => p.Time >= parameters.From && p.Time <= parameters.To)
-                    .ToListAsync();
-
-                if (powerConsumptions == null)
-                {
-                    return Ok(0);
-                }
-
-                foreach (var power in powerConsumptions)
-                {
-                    cost += power.TotalPowerDraw * (float)electricityCosts.ElementAt(0).Price;
-                }
-            }
+            var cost = await _costCalculator.Calculate(parameters);
 
             return Ok(cost);
         }
