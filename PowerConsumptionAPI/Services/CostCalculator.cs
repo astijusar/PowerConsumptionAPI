@@ -61,7 +61,7 @@ namespace PowerConsumptionAPI.Services
             {
                 foreach (var power in pc)
                 {
-                    cost += (power.TotalPowerDraw / 100000000) * (float)ec[0].Price;
+                    cost += power.TotalPowerDraw * (float)ec[0].Price;
                 }
             }
             else
@@ -77,11 +77,11 @@ namespace PowerConsumptionAPI.Services
                     if (time.CompareTo(firstInterval.Item1) >= 0
                         && time.CompareTo(firstInterval.Item2) <= 0)
                     {
-                        cost += (power.TotalPowerDraw / 100000000) * (float)ec[0].Price;
+                        cost += power.TotalPowerDraw * (float)ec[0].Price;
                     }
                     else
                     {
-                        cost += (power.TotalPowerDraw / 100000000) * (float)ec[1].Price;
+                        cost += power.TotalPowerDraw * (float)ec[1].Price;
                     }
                 }
             }
